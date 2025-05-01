@@ -13,17 +13,16 @@
     <FsYacc Include="Parser.fsy">
       <OtherFlags>--module Parser</OtherFlags>
     </FsYacc>
-
     <FsLex Include="Lexer.fsl">
       <OtherFlags>--unicode</OtherFlags>
     </FsLex>
-
-        <Compile Include="Program.fs" />
-
+    <Compile Include="Views.fs" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FsLexYacc" Version="11.3.0" />
+    <PackageReference Include="Giraffe" Version="7.0.2" />
   </ItemGroup>
 
 </Project>

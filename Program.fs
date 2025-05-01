@@ -1,33 +1,24 @@
-module MicroMLAstVisualizer.App
+module Program
 
-open System
-open System.Threading.Tasks
 open Microsoft.AspNetCore.Builder
-open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Hosting
-open Microsoft.AspNetCore.Http
-open FSharp.Text.Lexing
+open Microsoft.Extensions.DependencyInjection
+open Giraffe
+open Views  // <-- Import the new module
 
-open Lexer
-open Parser
-open JsonParsing
+let webApp =
+    mainPage |> htmlView
 
 [<EntryPoint>]
 let main args =
     let builder = WebApplication.CreateBuilder(args)
+
+    builder.Services.AddGiraffe() |> ignore
+
     let app = builder.Build()
 
-    app.MapGet("/", Func<HttpContext, Task>(fun ctx ->
-        task {
-            try
-                let input = """{"key": 123, "other": true}""" // Sample JSON-like test input
-                let lexbuf = LexBuffer<char>.FromString input
-                let result = Parser.start Lexer.read lexbuf
-                do! ctx.Response.WriteAsync(sprintf "Parsed AST: %A" result)
-            with ex ->
-                do! ctx.Response.WriteAsync($"Error: {ex.Message}")
-        }
-    )) |> ignore
+    app.UseStaticFiles() |> ignore
+    app.UseGiraffe(webApp)
 
     app.Run()
     0
